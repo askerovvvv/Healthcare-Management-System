@@ -10,6 +10,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security settings, add our jwt filter here to work, protects our endpoints
+ *
+ * @author askerovvvv
+ */
+
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor

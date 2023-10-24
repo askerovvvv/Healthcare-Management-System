@@ -13,23 +13,43 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * This class responsible to create some beans
+ * @author askerovvvv
+ */
+
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
 
+    /**
+     * creates and overrides method loadByUsername
+     *
+     * @return user from db if exists else throws exception
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден!"));
     }
 
+    /**
+     * it creates password encoder to encode user's password who has registered
+     *
+     * @return bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * creates and configures the provider to authenticate for Spring Security
+     *
+     * @return authentication provider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -38,6 +58,13 @@ public class ApplicationConfig {
         return authenticationProvider;
     }
 
+    /**
+     * creates and configures the manager to authenticate for Spring Security
+     *
+     * @param configuration authentication configuration
+     * @return authentication provider
+     * @throws Exception if smth has gone wrong during configure manager
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

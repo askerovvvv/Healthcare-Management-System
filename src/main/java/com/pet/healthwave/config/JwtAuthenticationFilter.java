@@ -16,6 +16,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Part of security, users send request with jwtToken this class responsible to check that token
+ * it is used in SecurityConfig
+ *
+ * @author askerovvvv
+ */
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -23,6 +30,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * if user sends request without token this filter stops his duties.
+     * otherwise it takes token then invokes method to get username from the request and
+     * check if user exists, he has already authenticated or not. if not user will be authenticated
+     *
+     * @param request overriding param
+     * @param response overriding param
+     * @param filterChain overriding param
+     * @throws ServletException overriding exception
+     * @throws IOException overriding exception
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
