@@ -1,6 +1,7 @@
 package com.pet.healthwave.auth;
 
 public class AuthServiceImpl implements AuthService{
+
     @Override
     public String registerService(RegisterRequest request) {
         return null;
