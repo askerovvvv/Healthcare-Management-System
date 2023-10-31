@@ -30,6 +30,7 @@ public class User implements UserDetails {
     private Byte age;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private Boolean emailVerified;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -58,6 +59,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return emailVerified;
     }
 }
