@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +18,8 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
     @Value("${spring.mail.sender.email}")
     private final String senderEmail;
 
-
     @Override
+    @Async
     public void send(String to, String from) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
@@ -29,7 +30,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
             javaMailSender.send(message);
 
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new EmailSenderException(EmailSenderMessages.MESSAGE_SEND_ERROR);
         }
     }
 }
