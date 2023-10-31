@@ -15,10 +15,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 @Component
 public class AuthValidatorImpl<T> extends DefaultValidatorImpl<T> implements AuthValidator<T> {
-    // todo: solid
 
     private final UserRepository userRepository;
-
 
     @Override
     public List<String> validatePassword(String password, String passwordConfirm) {
