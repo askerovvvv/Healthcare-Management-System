@@ -1,8 +1,12 @@
 package com.pet.healthwave.auth;
 
-import com.pet.healthwave.validator.DefaultValidatorImpl;
+import com.pet.healthwave.validator.DefaultValidator;
 
-public class AuthValidator<T> extends DefaultValidatorImpl<T> {
-    // todo: solid
+import java.util.List;
 
+public interface AuthValidator<T> {
+
+    List<String> validatePassword(String password, String passwordConfirm);
+
+    boolean checkIfUserExists(String email);
 }
