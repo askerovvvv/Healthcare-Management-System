@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "email_token")
 public class EmailVerificationToken {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

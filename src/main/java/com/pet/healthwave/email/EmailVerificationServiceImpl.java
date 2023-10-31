@@ -9,11 +9,14 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService{
 
     private final JavaMailSender javaMailSender;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     @Value("${spring.mail.sender.email}")
     private final String senderEmail;
@@ -32,5 +35,15 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
         } catch (MessagingException e) {
             throw new EmailSenderException(EmailSenderMessages.MESSAGE_SEND_ERROR);
         }
+    }
+
+    @Override
+    public void saveVerificationToken(EmailVerificationToken token) {
+        emailVerificationRepository.save(token);
+    }
+
+    @Override
+    public Optional<EmailVerificationToken> getToken(String token) {
+        return Optional.empty();
     }
 }
