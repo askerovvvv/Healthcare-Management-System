@@ -1,5 +1,6 @@
 package com.pet.healthwave.email;
 
+import com.pet.healthwave.exceptions.EmailSenderException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,12 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
 
     @Override
     @Async
-    public void send(String to, String from) {
+    public void send(String to, String email) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-//            helper.setText();
+            helper.setText(email, true);
+            helper.setTo(to);
             helper.setSubject(EmailSenderMessages.CONFIRM_ACCOUNT);
             helper.setFrom(senderEmail);
             javaMailSender.send(message);
