@@ -44,7 +44,6 @@ class EmailVerificationRepositoryTest {
         int changes = emailVerificationRepository.updateConfirmedAt(LocalDateTime.now(), testToken);
 
         EmailVerificationToken verificationToken = emailVerificationRepository.findByToken(testToken).get();
-
         assertEquals(1, changes);
 
     }
