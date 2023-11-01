@@ -1,7 +1,6 @@
 package com.pet.healthwave.auth;
 
 import com.pet.healthwave.email.EmailVerificationService;
-import com.pet.healthwave.email.EmailVerificationServiceImpl;
 import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.user.Role;
 import com.pet.healthwave.user.User;
@@ -9,6 +8,7 @@ import com.pet.healthwave.user.UserRepository;
 import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.ValidationException;
 import com.pet.healthwave.validator.ValidationMessages;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,6 +53,26 @@ public class AuthServiceImpl implements AuthService{
         emailVerificationService.send(request.getEmail(), buildEmail(request.getFirstname(), link));
 
         return AuthMessages.USER_REGISTERED;
+    }
+
+    @Override
+    @Transactional
+    public void activateAccount(String token) {
+        EmailVerificationToken verificationToken = emailVerificationService.getToken(token)
+                .orElseThrow(() -> new NullPointerException("As"));
+
+        if (verificationToken.getConfirmedAt() != null) {
+            throw new IllegalStateException("as");
+        }
+
+        LocalDateTime expiresAt = verificationToken.getExpiresAt();
+
+        if (expiresAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("as");
+        }
+
+        emailVerificationService.setConfirmedAt(token);
+        userRepository.updateEmailVerified(verificationToken.getUser().getEmail());
     }
 
     @Override
