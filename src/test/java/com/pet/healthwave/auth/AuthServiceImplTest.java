@@ -2,11 +2,12 @@ package com.pet.healthwave.auth;
 
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
+import com.pet.healthwave.exceptions.AuthException;
 import com.pet.healthwave.user.Role;
 import com.pet.healthwave.user.User;
 import com.pet.healthwave.user.UserRepository;
 import com.pet.healthwave.validator.CustomValidationError;
-import com.pet.healthwave.validator.ValidationException;
+import com.pet.healthwave.exceptions.DefaultValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -83,7 +84,7 @@ class AuthServiceImplTest {
 
         when(registerValidator.validate((requestData))).thenReturn(validationErrors);
 
-        assertThrows(ValidationException.class, () -> authService.registerService(requestData));
+        assertThrows(DefaultValidationException.class, () -> authService.registerService(requestData));
         verify(userRepository, never()).save(any());
     }
 
@@ -96,7 +97,7 @@ class AuthServiceImplTest {
         when(registerValidator.validate(requestData)).thenReturn(Collections.emptyList());
         when(registerValidator.validatePassword(requestData.getPassword(), requestData.getPasswordConfirm())).thenReturn(passwordErrors);
 
-        assertThrows(ValidationException.class, () -> authService.registerService(requestData));
+        assertThrows(DefaultValidationException.class, () -> authService.registerService(requestData));
         verify(userRepository, never()).save(any());
     }
 
