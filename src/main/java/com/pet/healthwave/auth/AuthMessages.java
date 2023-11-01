@@ -9,4 +9,5 @@ public class AuthMessages {
     public static final String ACCOUNT_ALREADY_VERIFIED_MESSAGE = "Данный аккаунт уже активен!";
     public static final String VERIFY_TOKEN_EXPIRED_MESSAGE = "Ссылка уже неактивна!";
     public static final String TOKEN_NOT_FOUND_MESSAGE = "Данной ссылки для активации не существует!";
+    public static final String PASSWORD_REQUIREMENTS_ERROR_MESSAGE = "Пароль должен состоять из минимум 4 букв и 2 цифр.";
 }

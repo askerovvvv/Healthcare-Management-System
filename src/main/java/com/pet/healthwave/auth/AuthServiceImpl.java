@@ -2,11 +2,11 @@ package com.pet.healthwave.auth;
 
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
+import com.pet.healthwave.exceptions.*;
 import com.pet.healthwave.user.Role;
 import com.pet.healthwave.user.User;
 import com.pet.healthwave.user.UserRepository;
 import com.pet.healthwave.validator.CustomValidationError;
-import com.pet.healthwave.validator.ValidationException;
 import com.pet.healthwave.validator.ValidationMessages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +27,19 @@ public class AuthServiceImpl implements AuthService{
     private final EmailVerificationService emailVerificationService;
 
     @Override
+    @Transactional
     public String registerService(RegisterRequest request) {
         List<CustomValidationError> fieldsErrors = registerValidator.validate(request);
         if (!fieldsErrors.isEmpty()) {
-            throw new ValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE);
+            throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
         }
 
         List<String> passwordErrors = registerValidator.validatePassword(request.getPassword(), request.getPasswordConfirm());
         if (!passwordErrors.isEmpty()) {
-            throw new ValidationException(ValidationMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
+            throw new AuthException(AuthMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
         }
 
-        if (!registerValidator.checkIfUserExists(request.getEmail())) {
+        if (registerValidator.checkIfUserExists(request.getEmail())) {
             throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
         }
 
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService{
         EmailVerificationToken verificationToken = createToken(user);
         emailVerificationService.saveVerificationToken(verificationToken);
 
-        String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken;
+        String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken.getToken();
 
         emailVerificationService.send(request.getEmail(), buildEmail(request.getFirstname(), link));
 
@@ -57,22 +58,24 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public void activateAccount(String token) {
+    public String confirmAccount(String token) {
         EmailVerificationToken verificationToken = emailVerificationService.getToken(token)
-                .orElseThrow(() -> new NullPointerException("As"));
+                .orElseThrow(() -> new ObjectNotFoundException(AuthMessages.TOKEN_NOT_FOUND_MESSAGE));
 
         if (verificationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("as");
+            throw new AccountAlreadyVerifiedException(AuthMessages.ACCOUNT_ALREADY_VERIFIED_MESSAGE);
         }
 
         LocalDateTime expiresAt = verificationToken.getExpiresAt();
 
         if (expiresAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("as");
+            throw new TokenExpiredException(AuthMessages.VERIFY_TOKEN_EXPIRED_MESSAGE);
         }
 
         emailVerificationService.setConfirmedAt(token);
         userRepository.updateEmailVerified(verificationToken.getUser().getEmail());
+
+        return AuthMessages.USER_ACTIVATE_ACCOUNT;
     }
 
     @Override

@@ -1,10 +1,9 @@
 package com.pet.healthwave.auth;
 
+import com.pet.healthwave.exceptions.AuthException;
 import com.pet.healthwave.user.UserRepository;
-import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.DefaultValidatorImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
