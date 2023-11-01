@@ -1,4 +1,4 @@
-package com.pet.healthwave.auth;
+package com.pet.healthwave.exceptions;
 
 public class AuthException extends RuntimeException {
     public AuthException(String message) {
