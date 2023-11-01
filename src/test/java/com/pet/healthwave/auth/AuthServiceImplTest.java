@@ -5,6 +5,8 @@ import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.user.Role;
 import com.pet.healthwave.user.User;
 import com.pet.healthwave.user.UserRepository;
+import com.pet.healthwave.validator.CustomValidationError;
+import com.pet.healthwave.validator.ValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,21 +36,19 @@ class AuthServiceImplTest {
     @InjectMocks
     private AuthServiceImpl authService;
 
+    private RegisterRequest requestData;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
-
-    }
-
-    @Test
-    void test_register_success() {
-        RegisterRequest requestData = RegisterRequest.builder()
+        requestData = RegisterRequest.builder()
                 .firstname("testName")
                 .email("test@.example.com")
                 .password("password")
                 .build();
+    }
 
+    @Test
+    void testRegister_Success() {
         User user = User.builder()
                 .firstname("testName")
                 .email("test@.example.com")
@@ -72,6 +73,40 @@ class AuthServiceImplTest {
         verify(emailVerificationService, times(1))
                 .saveVerificationToken(any(EmailVerificationToken.class));
         verify(emailVerificationService, times(1)).send(anyString(), anyString());
+    }
 
+    @Test
+    public void testRegister_WithEmptyField_ShouldThrowValidationException() {
+        List<CustomValidationError> validationErrors = Collections.singletonList(
+                new CustomValidationError("passwordConfirm", "Не должен быть пустым")
+        );
+
+        when(registerValidator.validate((requestData))).thenReturn(validationErrors);
+
+        assertThrows(ValidationException.class, () -> authService.registerService(requestData));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    public void testRegister_WithIncorrectPasswords_ShouldThrowValidationException() {
+        List<String> passwordErrors = new LinkedList<>();
+        passwordErrors.add("just to test");
+        passwordErrors.add("just to test2");
+
+        when(registerValidator.validate(requestData)).thenReturn(Collections.emptyList());
+        when(registerValidator.validatePassword(requestData.getPassword(), requestData.getPasswordConfirm())).thenReturn(passwordErrors);
+
+        assertThrows(ValidationException.class, () -> authService.registerService(requestData));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    public void testRegister_UserAlreadyExists_ShouldThrowValidationException() {
+
+        when(registerValidator.validate(requestData)).thenReturn(Collections.emptyList());
+        when(registerValidator.validatePassword(requestData.getPassword(), requestData.getPasswordConfirm())).thenReturn(Collections.emptyList());
+
+        assertThrows(AuthException.class, () -> authService.registerService(requestData));
+        verify(userRepository, never()).save(any());
     }
 }
