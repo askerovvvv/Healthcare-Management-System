@@ -1,8 +1,6 @@
 package com.pet.healthwave.handler;
 
-import com.pet.healthwave.exceptions.AuthException;
-import com.pet.healthwave.exceptions.DefaultValidationException;
-import com.pet.healthwave.exceptions.ObjectNotFoundException;
+import com.pet.healthwave.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +46,27 @@ public class DefaultExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
+    @ExceptionHandler(AccountAlreadyVerifiedException.class)
+    public ResponseEntity<ApiError> handleException(AccountAlreadyVerifiedException exception, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+    }
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiError> handleException(TokenExpiredException exception, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.GONE.value(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.GONE).body(apiError);
     }
 
 }
