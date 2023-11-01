@@ -33,11 +33,14 @@ public class AuthServiceImpl implements AuthService{
             throw new ValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE);
         }
 
-        validatePasswordAndEmail(
-                request.getPassword(),
-                request.getPasswordConfirm(),
-                request.getEmail()
-        );
+        List<String> passwordErrors = registerValidator.validatePassword(request.getPassword(), request.getPasswordConfirm());
+        if (!passwordErrors.isEmpty()) {
+            throw new ValidationException(ValidationMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
+        }
+
+        if (!registerValidator.checkIfUserExists(request.getEmail())) {
+            throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
+        }
 
         User user = createUserFromRequest(request);
         userRepository.save(user);
@@ -80,17 +83,6 @@ public class AuthServiceImpl implements AuthService{
                 .build();
     }
 
-    private void validatePasswordAndEmail(String password, String passwordConfirm, String email) {
-        List<String> passwordErrors = registerValidator.validatePassword(password, passwordConfirm);
-
-        if (!passwordErrors.isEmpty()) {
-            throw new ValidationException(ValidationMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
-        }
-
-        if (!registerValidator.checkIfUserExists(email)) {
-            throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
-        }
-    }
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
