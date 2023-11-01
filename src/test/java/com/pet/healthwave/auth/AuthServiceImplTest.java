@@ -76,7 +76,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    public void testRegister_WithEmptyField_ShouldThrowValidationException() {
+    void testRegister_WithEmptyField_ShouldThrowValidationException() {
         List<CustomValidationError> validationErrors = Collections.singletonList(
                 new CustomValidationError("passwordConfirm", "Не должен быть пустым")
         );
@@ -88,7 +88,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    public void testRegister_WithIncorrectPasswords_ShouldThrowValidationException() {
+    void testRegister_WithIncorrectPasswords_ShouldThrowValidationException() {
         List<String> passwordErrors = new LinkedList<>();
         passwordErrors.add("just to test");
         passwordErrors.add("just to test2");
@@ -101,7 +101,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    public void testRegister_UserAlreadyExists_ShouldThrowValidationException() {
+    void testRegister_UserAlreadyExists_ShouldThrowValidationException() {
 
         when(registerValidator.validate(requestData)).thenReturn(Collections.emptyList());
         when(registerValidator.validatePassword(requestData.getPassword(), requestData.getPasswordConfirm())).thenReturn(Collections.emptyList());
