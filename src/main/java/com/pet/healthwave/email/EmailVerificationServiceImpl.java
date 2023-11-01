@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -19,7 +20,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
     private final EmailVerificationRepository emailVerificationRepository;
 
     @Value("${spring.mail.sender.email}")
-    private final String senderEmail;
+    private String senderEmail;
 
     @Override
     @Async
@@ -44,6 +45,11 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
 
     @Override
     public Optional<EmailVerificationToken> getToken(String token) {
-        return Optional.empty();
+        return emailVerificationRepository.findByToken(token);
+    }
+
+    @Override
+    public int setConfirmedAt(String token) {
+        return emailVerificationRepository.updateConfirmedAt(LocalDateTime.now(), token);
     }
 }

@@ -15,8 +15,8 @@ public interface EmailVerificationRepository extends JpaRepository<EmailVerifica
     @Query("SELECT e FROM EmailVerificationToken e WHERE e.token = ?1")
     Optional<EmailVerificationToken> findByToken(String token);
 
-    @Modifying
     @Transactional
+    @Modifying
     @Query("UPDATE EmailVerificationToken e " +
             "SET e.confirmedAt = ?1 " +
             "WHERE e.token = ?2" )
