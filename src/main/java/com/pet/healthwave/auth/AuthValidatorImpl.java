@@ -11,11 +11,28 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Extends from default validator to validate fields. This class has own methods to validate -> password and
+ * check user from db. It also has generic <T> to validate different objects. For example: request to Register
+ * object, request to authenticate objects.
+ * @param <T> object to validate
+ * @author askerovvvv
+ */
+
+
 @RequiredArgsConstructor
 @Component
 public class AuthValidatorImpl<T> extends DefaultValidatorImpl<T> implements AuthValidator<T> {
 
     private final UserRepository userRepository;
+
+    /**
+     * Password must match the passwordConfirm. Password must have at list 4 letters and 2 digits.
+     * This method examines all these requirements.
+     * @param password password from request
+     * @param passwordConfirm it should be the same as the password
+     * @return description where password is wrong then method that receives this list would add it to logs
+     */
 
     @Override
     public List<String> validatePassword(String password, String passwordConfirm) {

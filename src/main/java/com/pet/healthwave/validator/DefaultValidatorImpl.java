@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class validates fields when user sends request. In necessary request classes(where defined fields for request)
- * there are some annotations list @NotNull and this validator checks if everything is good.
+ * there are some annotations like @NotNull and this validator checks if everything is good.
  * It has generic<T> to validate multiple objects.
  *
  * @author askerovvvv
