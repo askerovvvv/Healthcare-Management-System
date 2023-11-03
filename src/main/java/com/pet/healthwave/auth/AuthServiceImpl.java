@@ -1,5 +1,6 @@
 package com.pet.healthwave.auth;
 
+import com.pet.healthwave.config.JwtService;
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.exceptions.*;
@@ -10,11 +11,15 @@ import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.ValidationMessages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,9 +27,12 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
-    private final AuthValidator<RegisterRequest> registerValidator;
-    private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authManager;
+    private final AuthValidator<RegisterRequest> registerValidator;
+    private final AuthValidator<AuthenticationRequest> authValidator;
 
     @Override
     @Transactional
@@ -80,7 +88,28 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public AuthenticationResponse authenticateService(AuthenticationRequest request) {
-        return null;
+        List<CustomValidationError> fieldsErrors = authValidator.validate(request);
+        if (!fieldsErrors.isEmpty()) {
+            throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
+        }
+
+        try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (BadCredentialsException exception) {
+            throw new AuthException(AuthMessages.BADCREDENTIAL_MESSAGE);
+        }
+
+        Optional<User> user = userRepository.findByUsername(request.getEmail());
+        String jwtToken = jwtService.generateToken(user.get());
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
     private User createUserFromRequest(RegisterRequest request) {
