@@ -45,45 +45,47 @@ class AuthServiceImplTest {
     private AuthValidator<RegisterRequest> registerValidator;
     @Mock
     private AuthValidator<AuthenticationRequest> authValidator;
-    @InjectMocks
+    @Mock
     private AuthServiceImpl authService;
 
-    private RegisterRequest mockRegisterRequest;
-    private AuthenticationRequest mockAuthenticationRequest;
+    private RegisterRequest registerRequest;
+    private AuthenticationRequest authenticationRequest;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockRegisterRequest = RegisterRequest.builder()
+        registerRequest = RegisterRequest.builder()
                 .firstname("testName")
-                .email("test@.example.com")
-                .password("password")
-                .build();
-
-        mockAuthenticationRequest = AuthenticationRequest.builder()
                 .email("test@example.com")
                 .password("password")
                 .build();
+
+        authenticationRequest = AuthenticationRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .build();
+        authService =  new AuthServiceImpl(userRepository, emailVerificationService, passwordEncoder, jwtService, authManager, registerValidator,authValidator);
     }
 
     @Test
     void testRegister_Success() {
         User mockUser = User.builder()
                 .firstname("testName")
-                .email("test@.example.com")
+                .email("test@example.com")
                 .password("hashedPassword")
                 .role(Role.PATIENT)
                 .emailVerified(false)
                 .build();
 
-        when(registerValidator.validate(mockRegisterRequest)).thenReturn(Collections.emptyList());
+        when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
         when(registerValidator.validatePassword(anyString(), anyString())).thenReturn(Collections.emptyList());
-        when(registerValidator.checkIfUserExists(anyString())).thenReturn(Boolean.TRUE);
+        when(registerValidator.checkIfUserExists(anyString())).thenReturn(Boolean.FALSE);
         when(userRepository.save(mockUser)).thenReturn(mockUser);
         when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
         emailVerificationService.saveVerificationToken(any(EmailVerificationToken.class));
         doNothing().when(emailVerificationService).send(anyString(), anyString());
 
-        String expectedResponse = authService.registerService(mockRegisterRequest);
+        String expectedResponse = authService.registerService(registerRequest);
         String actualResponse = "На вашу почту отправлено сообщение, перейдите и активируйте аккаунт.";
 
         assertEquals(expectedResponse, actualResponse);
@@ -94,64 +96,66 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void testRegister_WithEmptyField_ShouldThrowsValidationException() {
+    void testRegister_EmptyField_ValidationException() {
         List<CustomValidationError> validationErrors = Collections.singletonList(
                 new CustomValidationError("passwordConfirm", "Не должен быть пустым")
         );
 
-        when(registerValidator.validate((mockRegisterRequest))).thenReturn(validationErrors);
+        when(registerValidator.validate((registerRequest))).thenReturn(validationErrors);
 
-        assertThrows(DefaultValidationException.class, () -> authService.registerService(mockRegisterRequest));
+        assertThrows(DefaultValidationException.class, () -> authService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void testRegister_WithIncorrectPasswords_ShouldThrowsValidationException() {
+    void testRegister_IncorrectPassword_AuthException() {
         List<String> passwordErrors = new LinkedList<>();
         passwordErrors.add("just to test");
         passwordErrors.add("just to test2");
 
-        when(registerValidator.validate(mockRegisterRequest)).thenReturn(Collections.emptyList());
-        when(registerValidator.validatePassword(mockRegisterRequest.getPassword(), mockRegisterRequest.getPasswordConfirm())).thenReturn(passwordErrors);
+        when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
+        when(registerValidator.validatePassword(registerRequest.getPassword(), registerRequest.getPasswordConfirm())).thenReturn(passwordErrors);
 
-        assertThrows(DefaultValidationException.class, () -> authService.registerService(mockRegisterRequest));
+        assertThrows(AuthException.class, () -> authService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void testRegister_UserAlreadyExists_ShouldThrowsValidationException() {
+    void testRegister_UserAlreadyExists_AuthException() {
 
-        when(registerValidator.validate(mockRegisterRequest)).thenReturn(Collections.emptyList());
-        when(registerValidator.validatePassword(mockRegisterRequest.getPassword(), mockRegisterRequest.getPasswordConfirm())).thenReturn(Collections.emptyList());
+        when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
+        when(registerValidator.validatePassword(registerRequest.getPassword(),
+                registerRequest.getPasswordConfirm())).thenReturn(Collections.emptyList());
+        when(registerValidator.checkIfUserExists(registerRequest.getEmail())).thenReturn(Boolean.TRUE);
 
-        assertThrows(AuthException.class, () -> authService.registerService(mockRegisterRequest));
+        assertThrows(AuthException.class, () -> authService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void testAuthenticate_Success() {
         User mockUser = User.builder()
-                .email(mockAuthenticationRequest.getEmail())
+                .email(authenticationRequest.getEmail())
                 .emailVerified(false)
                 .build();
 
-        when(authValidator.validate(mockAuthenticationRequest)).thenReturn(Collections.emptyList());
+        when(authValidator.validate(authenticationRequest)).thenReturn(Collections.emptyList());
         when(authManager.authenticate(any())).thenReturn(null);
-        when(userRepository.findByUsername(mockAuthenticationRequest.getEmail())).thenReturn(Optional.of(mockUser));
+        when(userRepository.findByUsername(authenticationRequest.getEmail())).thenReturn(Optional.of(mockUser));
         when(jwtService.generateToken(mockUser)).thenReturn("jwt token");
 
-        AuthenticationResponse expectedResponse = authService.authenticateService(mockAuthenticationRequest);
+        AuthenticationResponse expectedResponse = authService.authenticateService(authenticationRequest);
 
         assertEquals(expectedResponse.getToken(), "jwt token");
     }
 
     @Test
-    void testAuthenticate_BadCredentials_ShouldThrowsAuthException() {
+    void testAuthenticate_BadCredentials_AuthException() {
 
-        when(authValidator.validate(mockAuthenticationRequest)).thenReturn(Collections.emptyList());
+        when(authValidator.validate(authenticationRequest)).thenReturn(Collections.emptyList());
         when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
-        assertThrows(AuthException.class, () -> authService.authenticateService(mockAuthenticationRequest));
+        assertThrows(AuthException.class, () -> authService.authenticateService(authenticationRequest));
     }
 }
