@@ -1,5 +1,6 @@
 package com.pet.healthwave.user;
 
+import com.pet.healthwave.auth.AuthValidator;
 import com.pet.healthwave.exceptions.AuthException;
 import com.pet.healthwave.exceptions.DefaultValidationException;
 import com.pet.healthwave.validator.CustomValidationError;
@@ -25,7 +26,7 @@ class UserServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private UserValidator<ChangePasswordRequest> changePasswordValidator;
+    private AuthValidator<ChangePasswordRequest> changePasswordValidator;
     @Mock
     private UserServiceImpl userService;
     private ChangePasswordRequest changePasswordRequest;
@@ -52,10 +53,12 @@ class UserServiceImplTest {
                 .build();
 
         when(changePasswordValidator.validate(changePasswordRequest)).thenReturn(Collections.emptyList());
-        when(changePasswordValidator.validateChangePassword(changePasswordRequest)).thenReturn(Collections.emptyList());
+        when(changePasswordValidator.validatePassword(changePasswordRequest.newPassword(),
+                changePasswordRequest.newPasswordConfirm())).thenReturn(Collections.emptyList());
         when(passwordEncoder.encode(changePasswordRequest.newPassword())).thenReturn("new password");
         when(userRepository.save(user)).thenReturn(user);
         when(authToken.getPrincipal()).thenReturn(user);
+        when(passwordEncoder.matches(any(), any())).thenReturn(Boolean.TRUE);
 
         userService.changePassword(
                 changePasswordRequest,
@@ -79,12 +82,32 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testChangePassword_IncorrectPassword_ValidationException() {
+    void testChangePassword_IncorrectPassword_AuthException() {
         List<String> passwordErrors = new ArrayList<>();
         passwordErrors.add("just to test");
 
         when(changePasswordValidator.validate(changePasswordRequest)).thenReturn(Collections.emptyList());
-        when(changePasswordValidator.validateChangePassword(changePasswordRequest)).thenReturn(passwordErrors);
+        when(changePasswordValidator.validatePassword(changePasswordRequest.newPassword(),
+                changePasswordRequest.newPasswordConfirm())).thenReturn(passwordErrors);
+
+        assertThrows(AuthException.class,
+                () -> userService.changePassword(changePasswordRequest, authToken));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void testChangePassword_IncorrectCurrentPassword_AuthException() {
+        User user = User.builder()
+                .password("old password")
+                .build();
+
+        when(changePasswordValidator.validate(changePasswordRequest)).thenReturn(Collections.emptyList());
+        when(changePasswordValidator.validatePassword(changePasswordRequest.newPassword(),
+                changePasswordRequest.newPasswordConfirm())).thenReturn(Collections.emptyList());
+        when(passwordEncoder.encode(changePasswordRequest.newPassword())).thenReturn("new password");
+        when(userRepository.save(user)).thenReturn(user);
+        when(authToken.getPrincipal()).thenReturn(user);
+        when(passwordEncoder.matches(any(), any())).thenReturn(Boolean.FALSE);
 
         assertThrows(AuthException.class,
                 () -> userService.changePassword(changePasswordRequest, authToken));
