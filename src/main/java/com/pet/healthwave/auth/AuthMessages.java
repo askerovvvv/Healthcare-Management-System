@@ -1,5 +1,12 @@
 package com.pet.healthwave.auth;
 
+/**\
+ * Class where we store messages to send with response body
+ * If someone need to change some message he could find it here and change
+ *
+ * @author askerovvvv
+ */
+
 public class AuthMessages {
     public static final String USER_REGISTERED = "На вашу почту отправлено сообщение, перейдите и активируйте аккаунт.";
     public static final String USER_ACTIVATE_ACCOUNT = "Вы успешно активировали ваш аккаунт! Теперь можете пользоваться вашим аккаунтом.";
