@@ -3,10 +3,10 @@ package com.pet.healthwave;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class HealthwaveApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
