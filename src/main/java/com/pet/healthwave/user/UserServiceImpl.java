@@ -8,6 +8,7 @@ import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.ValidationMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -18,7 +19,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-    private final UserValidator<ChangePasswordRequest> changePasswordValidator;
+    private final AuthValidator<ChangePasswordRequest> changePasswordValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
@@ -27,13 +29,17 @@ public class UserServiceImpl implements UserService{
             throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
         }
 
-        List<String> passwordErrors = changePasswordValidator.validateChangePassword(request);
+        List<String> passwordErrors = changePasswordValidator.validatePassword(request.newPassword(), request.newPasswordConfirm());
         if (!passwordErrors.isEmpty()) {
             throw new AuthException(AuthMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
         }
 
         User user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-        user.setPassword(request.newPassword());
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+            throw new AuthException(UserMessages.WRONG_CURRENT_PASSWORD);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
 }
