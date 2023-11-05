@@ -2,6 +2,7 @@ package com.pet.healthwave.validator;
 
 import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  * @author askerovvvv
  */
 
-
+@Component
 @RequiredArgsConstructor
 public class DefaultValidatorImpl<T> implements DefaultValidator<T> {
 
@@ -39,3 +40,4 @@ public class DefaultValidatorImpl<T> implements DefaultValidator<T> {
                 .collect(Collectors.toList());
     }
 }
+

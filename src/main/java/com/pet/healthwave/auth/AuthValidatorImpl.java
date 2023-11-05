@@ -73,6 +73,4 @@ public class AuthValidatorImpl<T> extends DefaultValidatorImpl<T> implements Aut
     public boolean checkIfUserExists(String email) {
         return userRepository.findByUsername(email).isPresent();
     }
-
-
 }
