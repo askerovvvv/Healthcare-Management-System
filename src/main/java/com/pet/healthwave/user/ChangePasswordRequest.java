@@ -3,11 +3,11 @@ package com.pet.healthwave.user;
 import jakarta.validation.constraints.NotEmpty;
 
 public record ChangePasswordRequest (
-        @NotEmpty
+        @NotEmpty(message = "Поле текущий пароль не должен быть пустым!")
         String currentPassword,
-        @NotEmpty
+        @NotEmpty(message = "Новый пароль не должен быть пустым!")
         String newPassword,
-        @NotEmpty
+        @NotEmpty(message = "Подтверждение пароля не должен быть пустым!")
         String newPasswordConfirm
 ){
 }
