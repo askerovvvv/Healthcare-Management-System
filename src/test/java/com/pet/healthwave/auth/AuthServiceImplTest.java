@@ -11,7 +11,6 @@ import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.exceptions.DefaultValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,7 +45,7 @@ class AuthServiceImplTest {
     @Mock
     private AuthValidator<AuthenticationRequest> authValidator;
     @Mock
-    private AuthServiceImpl authService;
+    private AuthServiceImpl mockAuthService;
 
     private RegisterRequest registerRequest;
     private AuthenticationRequest authenticationRequest;
@@ -54,27 +53,28 @@ class AuthServiceImplTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        registerRequest = RegisterRequest.builder()
-                .firstname("testName")
-                .email("test@example.com")
-                .password("password")
-                .build();
+        registerRequest = new RegisterRequest(
+                "testName",
+                "lastname",
+                "test@example.com",
+                "password",
+                "password",
+                (byte) 44);
 
-        authenticationRequest = AuthenticationRequest.builder()
-                .email("test@example.com")
-                .password("password")
-                .build();
-        authService =  new AuthServiceImpl(userRepository, emailVerificationService, passwordEncoder, jwtService, authManager, registerValidator,authValidator);
+        authenticationRequest = new AuthenticationRequest("test@example.com", "password");
+        mockAuthService = new AuthServiceImpl(userRepository, emailVerificationService, passwordEncoder, jwtService, authManager, registerValidator,authValidator);
     }
 
     @Test
     void testRegister_Success() {
         User mockUser = User.builder()
                 .firstname("testName")
+                .lastname("lastname")
                 .email("test@example.com")
                 .password("hashedPassword")
-                .role(Role.PATIENT)
+                .age((byte) 44)
                 .emailVerified(false)
+                .role(Role.PATIENT)
                 .build();
 
         when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
@@ -85,7 +85,7 @@ class AuthServiceImplTest {
         emailVerificationService.saveVerificationToken(any(EmailVerificationToken.class));
         doNothing().when(emailVerificationService).send(anyString(), anyString());
 
-        String expectedResponse = authService.registerService(registerRequest);
+        String expectedResponse = mockAuthService.registerService(registerRequest);
         String actualResponse = "На вашу почту отправлено сообщение, перейдите и активируйте аккаунт.";
 
         assertEquals(expectedResponse, actualResponse);
@@ -103,7 +103,7 @@ class AuthServiceImplTest {
 
         when(registerValidator.validate((registerRequest))).thenReturn(validationErrors);
 
-        assertThrows(DefaultValidationException.class, () -> authService.registerService(registerRequest));
+        assertThrows(DefaultValidationException.class, () -> mockAuthService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
@@ -114,9 +114,9 @@ class AuthServiceImplTest {
         passwordErrors.add("just to test2");
 
         when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
-        when(registerValidator.validatePassword(registerRequest.getPassword(), registerRequest.getPasswordConfirm())).thenReturn(passwordErrors);
+        when(registerValidator.validatePassword(registerRequest.password(), registerRequest.passwordConfirm())).thenReturn(passwordErrors);
 
-        assertThrows(AuthException.class, () -> authService.registerService(registerRequest));
+        assertThrows(AuthException.class, () -> mockAuthService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
@@ -124,29 +124,29 @@ class AuthServiceImplTest {
     void testRegister_UserAlreadyExists_AuthException() {
 
         when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());
-        when(registerValidator.validatePassword(registerRequest.getPassword(),
-                registerRequest.getPasswordConfirm())).thenReturn(Collections.emptyList());
-        when(registerValidator.checkIfUserExists(registerRequest.getEmail())).thenReturn(Boolean.TRUE);
+        when(registerValidator.validatePassword(registerRequest.password(),
+                registerRequest.passwordConfirm())).thenReturn(Collections.emptyList());
+        when(registerValidator.checkIfUserExists(registerRequest.email())).thenReturn(Boolean.TRUE);
 
-        assertThrows(AuthException.class, () -> authService.registerService(registerRequest));
+        assertThrows(AuthException.class, () -> mockAuthService.registerService(registerRequest));
         verify(userRepository, never()).save(any());
     }
 
     @Test
     void testAuthenticate_Success() {
         User mockUser = User.builder()
-                .email(authenticationRequest.getEmail())
+                .email(authenticationRequest.email())
                 .emailVerified(false)
                 .build();
 
         when(authValidator.validate(authenticationRequest)).thenReturn(Collections.emptyList());
         when(authManager.authenticate(any())).thenReturn(null);
-        when(userRepository.findByUsername(authenticationRequest.getEmail())).thenReturn(Optional.of(mockUser));
+        when(userRepository.findByUsername(authenticationRequest.email())).thenReturn(Optional.of(mockUser));
         when(jwtService.generateToken(mockUser)).thenReturn("jwt token");
 
-        AuthenticationResponse expectedResponse = authService.authenticateService(authenticationRequest);
+        AuthenticationResponse expectedResponse = mockAuthService.authenticateService(authenticationRequest);
 
-        assertEquals(expectedResponse.getToken(), "jwt token");
+        assertEquals(expectedResponse.token(), "jwt token");
     }
 
     @Test
@@ -156,6 +156,6 @@ class AuthServiceImplTest {
         when(authManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
-        assertThrows(AuthException.class, () -> authService.authenticateService(authenticationRequest));
+        assertThrows(AuthException.class, () -> mockAuthService.authenticateService(authenticationRequest));
     }
 }

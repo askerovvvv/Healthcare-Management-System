@@ -42,12 +42,12 @@ public class AuthServiceImpl implements AuthService{
             throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
         }
 
-        List<String> passwordErrors = registerValidator.validatePassword(request.getPassword(), request.getPasswordConfirm());
+        List<String> passwordErrors = registerValidator.validatePassword(request.password(), request.passwordConfirm());
         if (!passwordErrors.isEmpty()) {
             throw new AuthException(AuthMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
         }
 
-        if (registerValidator.checkIfUserExists(request.getEmail())) {
+        if (registerValidator.checkIfUserExists(request.email())) {
             throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
         }
 
@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService{
 
         String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken.getToken();
 
-        emailVerificationService.send(request.getEmail(), buildEmail(request.getFirstname(), link));
+        emailVerificationService.send(request.email(), buildEmail(request.firstname(), link));
 
         return AuthMessages.USER_REGISTERED;
     }
@@ -96,29 +96,27 @@ public class AuthServiceImpl implements AuthService{
         try {
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
+                            request.email(),
+                            request.password()
                     )
             );
         } catch (BadCredentialsException exception) {
             throw new AuthException(AuthMessages.BADCREDENTIAL_MESSAGE);
         }
 
-        Optional<User> user = userRepository.findByUsername(request.getEmail());
+        Optional<User> user = userRepository.findByUsername(request.email());
         String jwtToken = jwtService.generateToken(user.get());
 
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return new AuthenticationResponse(jwtToken);
     }
 
     private User createUserFromRequest(RegisterRequest request) {
         return User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .age(request.getAge())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .firstname(request.firstname())
+                .lastname(request.lastname())
+                .email(request.email())
+                .age(request.age())
+                .password(passwordEncoder.encode(request.password()))
                 .role(Role.PATIENT)
                 .emailVerified(false)
                 .build();

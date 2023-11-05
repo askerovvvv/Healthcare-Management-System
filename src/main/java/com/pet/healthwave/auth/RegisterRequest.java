@@ -1,36 +1,30 @@
 package com.pet.healthwave.auth;
 
-import com.pet.healthwave.user.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
 
-@Data
-@Builder
-public class RegisterRequest {
+public record RegisterRequest(
+        @NotEmpty(message = "Имя не может быть пустым.")
+        @Size(max = 20, message = "Слишком длинное имя.")
+        String firstname,
 
-    @NotEmpty(message = "Имя не может быть пустым.")
-    @Size(max = 20, message = "Слишком длинное имя.")
-    private String firstname;
+        @NotEmpty(message = "Фамилия не может быть пустым.")
+        @Size(max = 20, message = "Слишком длинная фамилия.")
+        String lastname,
 
-    @NotEmpty(message = "Фамилия не может быть пустым.")
-    @Size(max = 20, message = "Слишком длинная фамилия.")
-    private String lastname;
+        @Email(message = "Пожалуйста введите верный формат почты.")
+        String email,
 
-    @Email(message = "Пожалуйста введите верный формат почты.")
-    private String email;
+        @NotEmpty(message = "Пароль не может быть пустым.")
+        String password,
 
-    @NotEmpty(message = "Пароль не может быть пустым.")
-    private String password;
+        @NotEmpty(message = "Подтверждение пароля не может быть пустым.")
+        String passwordConfirm,
 
-    @NotEmpty(message = "Подтверждение пароля не может быть пустым.")
-    private String passwordConfirm;
+        @NotNull(message = "Возраст не может быть пустым.")
+        Byte age
+) {
 
-    @NotNull(message = "Возраст не может быть пустым.")
-    private Byte age;
 }
