@@ -23,4 +23,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(authService.confirmAccount(token));
     }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(AuthenticationRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.authenticateService(request));
+    }
+
 }
