@@ -4,6 +4,8 @@ import com.pet.healthwave.exceptions.EmailSenderException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService{
 
+    private final Logger logger = LoggerFactory.getLogger(EmailVerificationServiceImpl.class);
     private final JavaMailSender javaMailSender;
     private final EmailVerificationRepository emailVerificationRepository;
 
@@ -40,8 +43,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
             helper.setSubject(EmailSenderMessages.CONFIRM_ACCOUNT);
             helper.setFrom(senderEmail);
             javaMailSender.send(message);
+            logger.info("Ссылка для подтверждении аккаунта отправлена для: " + to);
 
         } catch (MessagingException e) {
+            logger.error("Ошибка при отправке на почту: " + to);
             throw new EmailSenderException(EmailSenderMessages.MESSAGE_SEND_ERROR);
         }
     }
@@ -49,6 +54,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
     @Override
     public void saveVerificationToken(EmailVerificationToken token) {
         emailVerificationRepository.save(token);
+        logger.info("Создан новый токен: " + token);
     }
 
     @Override
@@ -58,6 +64,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
 
     @Override
     public int setConfirmedAt(String token) {
+        logger.info("По токену: " + token + " аккаунт подтвержден");
         return emailVerificationRepository.updateConfirmedAt(LocalDateTime.now(), token);
     }
 }
