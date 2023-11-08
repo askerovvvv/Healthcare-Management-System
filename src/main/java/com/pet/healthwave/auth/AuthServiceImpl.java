@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Main auth business logic is here. It implements interface and has @Service annotation for spring framework,
+ * @RequiredArgsConstructor annotation to inject dependencies.
+ *
+ * @author askerovvvv
+ */
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
@@ -133,6 +140,13 @@ public class AuthServiceImpl implements AuthService{
                 .build();
     }
 
+    /**
+     * Server sends to user's email html template with some data, this method is just html template.
+     *
+     * @param name user's name
+     * @param link to confirm account
+     * @return html template
+     */
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +

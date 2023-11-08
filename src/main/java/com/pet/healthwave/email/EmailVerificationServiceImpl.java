@@ -13,6 +13,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Email business logic is here. It implements interface and has @Service annotation for spring framework,
+ * @RequiredArgsConstructor annotation to inject dependencies.
+ *
+ * @author askerovvvv
+ */
+
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService{

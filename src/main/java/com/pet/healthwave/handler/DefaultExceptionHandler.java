@@ -11,6 +11,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handle all exceptions in program. @RestControllerAdvice usual spring annotation to handle exceptions
+ *
+ * @author askerovvvv
+ */
+
+
 @RestControllerAdvice
 public class DefaultExceptionHandler {
 

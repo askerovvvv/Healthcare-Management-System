@@ -6,6 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Usual controller for User. All endpoints here are not secured(permit all)
+ * @author askerovvvv
+ */
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
