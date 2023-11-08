@@ -11,6 +11,8 @@ import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.ValidationMessages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +35,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
+    private final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
     private final UserRepository userRepository;
     private final EmailVerificationService emailVerificationService;
     private final PasswordEncoder passwordEncoder;
@@ -46,20 +49,24 @@ public class AuthServiceImpl implements AuthService{
     public String registerService(RegisterRequest request) {
         List<CustomValidationError> fieldsErrors = registerValidator.validate(request);
         if (!fieldsErrors.isEmpty()) {
+            logger.error("У пользователя " + request.email() + " ошибка при валидации полей " + fieldsErrors);
             throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
         }
 
         List<String> passwordErrors = registerValidator.validatePassword(request.password(), request.passwordConfirm());
         if (!passwordErrors.isEmpty()) {
+            logger.error("У пользователя " + request.email() + " ошибка при валидации пароля " + passwordErrors);
             throw new AuthException(AuthMessages.PASSWORD_REQUIREMENTS_ERROR_MESSAGE);
         }
 
         if (registerValidator.checkIfUserExists(request.email())) {
+            logger.error("Аккаунт " + request.email() + " уже зарегистрирован");
             throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
         }
 
         User user = createUserFromRequest(request);
         userRepository.save(user);
+        logger.info("Новый пользователь " + user.getEmail());
 
         EmailVerificationToken verificationToken = createToken(user);
         emailVerificationService.saveVerificationToken(verificationToken);
@@ -67,6 +74,7 @@ public class AuthServiceImpl implements AuthService{
         String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken.getToken();
 
         emailVerificationService.send(request.email(), buildEmail(request.firstname(), link));
+        logger.info("Ссылка для подтверждении аккаунта отправлена для " + user.getEmail());
 
         return AuthMessages.USER_REGISTERED;
     }
@@ -78,17 +86,20 @@ public class AuthServiceImpl implements AuthService{
                 .orElseThrow(() -> new ObjectNotFoundException(AuthMessages.TOKEN_NOT_FOUND_MESSAGE));
 
         if (verificationToken.getConfirmedAt() != null) {
+            logger.error("По данному токену аккаунт уже активирован " + token);
             throw new AccountAlreadyVerifiedException(AuthMessages.ACCOUNT_ALREADY_VERIFIED_MESSAGE);
         }
 
         LocalDateTime expiresAt = verificationToken.getExpiresAt();
 
         if (expiresAt.isBefore(LocalDateTime.now())) {
+            logger.error("Время токена истекло " + token);
             throw new TokenExpiredException(AuthMessages.VERIFY_TOKEN_EXPIRED_MESSAGE);
         }
 
         emailVerificationService.setConfirmedAt(token);
         userRepository.updateEmailVerified(verificationToken.getUser().getEmail());
+        logger.info("Аккаунт подтвержден по токену " + token);
 
         return AuthMessages.USER_ACTIVATE_ACCOUNT;
     }
@@ -97,6 +108,7 @@ public class AuthServiceImpl implements AuthService{
     public AuthenticationResponse authenticateService(AuthenticationRequest request) {
         List<CustomValidationError> fieldsErrors = authValidator.validate(request);
         if (!fieldsErrors.isEmpty()) {
+            logger.error("У пользователя " + request.email() + " ошибка при валидации полей " + fieldsErrors);
             throw new DefaultValidationException(ValidationMessages.VALIDATION_ERROR_MESSAGE, fieldsErrors);
         }
 
@@ -108,11 +120,13 @@ public class AuthServiceImpl implements AuthService{
                     )
             );
         } catch (BadCredentialsException exception) {
+            logger.error("У пользователя " + request.email() + " неверные данные для входа");
             throw new AuthException(AuthMessages.BADCREDENTIAL_MESSAGE);
         }
 
         Optional<User> user = userRepository.findByUsername(request.email());
         String jwtToken = jwtService.generateToken(user.get());
+        logger.info("Новый вход в аккаунт " + user.get().getEmail());
 
         return new AuthenticationResponse(jwtToken);
     }
