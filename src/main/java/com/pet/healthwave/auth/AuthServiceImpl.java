@@ -25,9 +25,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Main auth business logic is here. It implements interface and has @Service annotation for spring framework,
- * @RequiredArgsConstructor annotation to inject dependencies.
- *
+ * Main auth business logic is here. It implements interface.
+ * Has @RequiredArgsConstructor annotation to inject dependencies.
  * @author askerovvvv
  */
 
