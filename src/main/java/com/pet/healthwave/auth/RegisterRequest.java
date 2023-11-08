@@ -8,14 +8,12 @@ import jakarta.validation.constraints.Size;
 /**
  * Registration details. Don't need to use class, record is better.
  * Every field has at list one annotation to validate data
- *
  * @param firstname
  * @param lastname
  * @param email it would be user's username
  * @param password password to save on db
  * @param passwordConfirm just to match the password
  * @param age
- *
  * @author askerovvvv
  */
 

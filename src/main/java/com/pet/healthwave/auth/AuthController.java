@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Usual controller for User. All endpoints here are not secured(permit all)
+ * Has @RequiredArgsConstructor annotation to inject dependencies.
  * @author askerovvvv
  */
 

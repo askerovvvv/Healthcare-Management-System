@@ -15,8 +15,7 @@ import java.util.Optional;
 
 /**
  * Email business logic is here. It implements interface and has @Service annotation for spring framework,
- * @RequiredArgsConstructor annotation to inject dependencies.
- *
+ * Has @RequiredArgsConstructor annotation to inject dependencies.
  * @author askerovvvv
  */
 

@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 /**
  * This class helps to work with jwt token. It generates token using user information, extracts user data
- * from the token, checks if token is valid
+ * from the token, checks if token is valid.
  * @author askerovvvv
  */
 

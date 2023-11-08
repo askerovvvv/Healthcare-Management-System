@@ -19,7 +19,6 @@ import java.io.IOException;
 /**
  * Part of security, users send request with jwtToken this class responsible to check that token
  * it is used in SecurityConfig
- *
  * @author askerovvvv
  */
 

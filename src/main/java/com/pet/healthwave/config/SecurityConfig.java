@@ -12,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * Security settings, add our jwt filter here to work, protects our endpoints
- *
  * @author askerovvvv
  */
 

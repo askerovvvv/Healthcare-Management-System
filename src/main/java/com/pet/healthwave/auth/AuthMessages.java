@@ -3,7 +3,6 @@ package com.pet.healthwave.auth;
 /**
  * Class where we store messages to send with response body
  * If someone need to change some messages he could find it here and change
- *
  * @author askerovvvv
  */
 

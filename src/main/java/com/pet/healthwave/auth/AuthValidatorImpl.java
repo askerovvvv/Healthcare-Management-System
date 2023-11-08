@@ -14,11 +14,10 @@ import java.util.regex.Pattern;
 /**
  * Extends from default validator to validate fields. This class has own methods to validate -> password and
  * check user from db. It also has generic <T> to validate different objects. For example: request to Register
- * object, request to authenticate objects.
+ * object, request to authenticate objects. Has @RequiredArgsConstructor annotation to inject dependencies.
  * @param <T> object to validate
  * @author askerovvvv
  */
-
 
 @RequiredArgsConstructor
 @Component
