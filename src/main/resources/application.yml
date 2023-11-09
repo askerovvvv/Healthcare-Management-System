@@ -31,9 +31,3 @@ spring:
   output:
     ansi:
       enabled: always
-
-logging:
-  file:
-    name: loggers.log
-  pattern:
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%level] [%t] %c{1.} : %m%n"

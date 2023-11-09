@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmailVerificationServiceImpl implements EmailVerificationService{
 
-    private final Logger logger = LoggerFactory.getLogger(EmailVerificationServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger("EmailVerificationServiceImpl");
     private final JavaMailSender javaMailSender;
     private final EmailVerificationRepository emailVerificationRepository;
 
