@@ -2,3 +2,8 @@
 14:41:22.247 INFO  104124 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: admin@admin.com
 14:41:50.585 INFO  132462 --- [http-nio-8080-exec-3] EmailVerificationServiceImpl : - По токену: c3aee57a-4050-47e9-86e2-71385842c9c7 аккаунт подтвержден
 15:05:30.402 INFO  16920 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: gigow71727@eazenity.com
+21:19:16.284 INFO  81319 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: gigow71727@eazenity.com
+21:20:28.875 INFO  153910 --- [task-2] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: gigow71727@eazenity.com
+22:18:17.732 INFO  26745 --- [http-nio-8080-exec-2] EmailVerificationServiceImpl : - Создан новый токен: EmailVerificationToken(id=3, token=6f88ab8f-42a0-4435-9d9f-5122582b0469, createdAt=2023-11-15T22:18:17.721273886, expiresAt=2023-11-15T22:33:17.721289206, confirmedAt=null, user=User(id=3, firstname=User, lastname=John, email=wogix81966@bikedid.com, password=$2a$10$FdYlrlTBLN9Zs9Br8LSh9u.AfNizWr3dEDFUjgcDBuQhNvOZIwY0m, age=18, role=ROLE_PATIENT, emailVerified=false, user_type=PATIENT))
+22:18:20.706 INFO  29719 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: wogix81966@bikedid.com
+22:18:33.432 INFO  42445 --- [http-nio-8080-exec-3] EmailVerificationServiceImpl : - По токену: 6f88ab8f-42a0-4435-9d9f-5122582b0469 аккаунт подтвержден

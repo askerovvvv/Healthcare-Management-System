@@ -4,7 +4,12 @@ package com.pet.healthwave.doctor;
 import com.pet.healthwave.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,12 +20,21 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue("DOCTOR")
 @PrimaryKeyJoinColumn(name = "user_id")
+@EntityListeners(AuditingEntityListener.class)
 public class Doctor extends User {
     private Byte experience;
     @Enumerated(EnumType.STRING)
     private Specialty specialty;
     private Set<String> qualifications;
     private Boolean isAccepted;
+
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModified;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Long lastModifiedBy;
 
     @Override
     public boolean equals(Object o) {

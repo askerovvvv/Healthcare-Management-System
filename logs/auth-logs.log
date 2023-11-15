@@ -14,3 +14,32 @@
 15:00:54.541 ERROR 155  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
 15:00:54.545 INFO  159  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
 15:00:54.550 ERROR 164  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
+19:04:07.338 INFO  208387 --- [http-nio-8080-exec-5] AuthServiceImpl : - Новый вход в аккаунт: gigow71727@eazenity.com
+21:18:59.764 INFO  64799 --- [http-nio-8080-exec-4] AuthServiceImpl : - Новый вход в аккаунт: admin@admin.com
+21:21:39.744 INFO  224779 --- [http-nio-8080-exec-10] AuthServiceImpl : - Новый вход в аккаунт: gigow71727@eazenity.com
+21:22:33.109 ERROR 218  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+21:22:33.138 ERROR 247  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+21:22:33.156 INFO  265  --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+21:22:33.169 ERROR 278  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+21:22:33.178 INFO  287  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+21:22:33.187 ERROR 296  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
+21:23:19.120 ERROR 3731 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+21:23:19.129 ERROR 3740 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+21:23:19.138 INFO  3749 --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+21:23:19.145 ERROR 3756 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+21:23:19.152 INFO  3763 --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+21:23:19.158 ERROR 3769 --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
+22:18:17.720 INFO  26733 --- [http-nio-8080-exec-2] AuthServiceImpl : - Новый пользователь: wogix81966@bikedid.com с типом: false
+22:18:33.451 INFO  42464 --- [http-nio-8080-exec-3] AuthServiceImpl : - Аккаунт подтвержден по токену: 6f88ab8f-42a0-4435-9d9f-5122582b0469
+22:19:21.336 ERROR 3033 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+22:19:21.346 ERROR 3043 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+22:19:21.355 INFO  3052 --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+22:19:21.363 ERROR 3060 --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+22:19:21.370 INFO  3067 --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+22:19:21.377 ERROR 3074 --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
+22:26:23.431 ERROR 132  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+22:26:23.444 ERROR 145  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+22:26:23.450 INFO  151  --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+22:26:23.456 ERROR 157  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+22:26:23.460 INFO  161  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+22:26:23.466 ERROR 167  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован

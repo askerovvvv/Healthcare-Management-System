@@ -15,6 +15,7 @@ public interface DoctorMapper {
     DoctorMapper INSTANCE = Mappers.getMapper(DoctorMapper.class);
 
     @InheritInverseConfiguration
+    @Mapping(target = "firstname", source = "firstname")
     DoctorDTO doctorToDTO(Doctor doctor);
 
     default DoctorDTO map(Doctor doctor) {
