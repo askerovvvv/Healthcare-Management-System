@@ -6,3 +6,12 @@
 14:52:32.089 INFO  141  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
 14:52:59.496 INFO  120  --- [Test worker] DoctorServiceImpl : - Mapping Doctor to DoctorDTO: Doctor(experience=null, specialty=null, qualifications=null, isAccepted=null)
 14:52:59.506 INFO  130  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
+15:00:44.997 INFO  202  --- [Test worker] DoctorServiceImpl : - Mapping Doctor to DoctorDTO: Doctor(experience=null, specialty=null, qualifications=null, isAccepted=null)
+15:00:45.013 INFO  218  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
+15:00:54.556 INFO  170  --- [Test worker] DoctorServiceImpl : - Mapping Doctor to DoctorDTO: Doctor(experience=null, specialty=null, qualifications=null, isAccepted=null)
+15:00:54.562 INFO  176  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
+15:00:57.756 ERROR 3370 --- [Test worker] UserServiceImpl : - Пользователь: null ввел неверный текущий пароль.
+15:00:57.760 ERROR 3374 --- [Test worker] UserServiceImpl : - У пользователя: null ошибка при валидации полей: [CustomValidationError[field=newPassword, message=Новый пароль не должен быть пустым!]]
+15:00:57.765 INFO  3379 --- [Test worker] UserServiceImpl : - Пользователь: null успешно сменил пароль
+15:00:57.768 ERROR 3382 --- [Test worker] UserServiceImpl : - У пользователя: null ошибка при валидации пароля: [just to test]
+15:05:25.966 INFO  12484 --- [http-nio-8080-exec-2] DoctorServiceImpl : - Доктор по айди 1 подтвержден

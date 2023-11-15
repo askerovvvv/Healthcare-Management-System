@@ -1,5 +1,6 @@
 package com.pet.healthwave.doctor;
 
+import com.pet.healthwave.email.EmailSender;
 import com.pet.healthwave.exceptions.DoctorDidNotAcceptedException;
 import com.pet.healthwave.exceptions.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ public class DoctorServiceImpl implements DoctorService{
 
     private final DoctorRepository doctorRepository;
     private final Logger logger = LoggerFactory.getLogger("DoctorServiceImpl");
+    private final EmailSender emailSender;
+
     @Override
     public void AcceptDoctor(Long id) {
         int updated = doctorRepository.updateIsAccepted(id);
@@ -24,6 +27,8 @@ public class DoctorServiceImpl implements DoctorService{
             logger.error("Доктор по айди " + id + " не подтвержден");
             throw new DoctorDidNotAcceptedException(DoctorMessages.DOCTOR_DID_NOT_ACCEPTED);
         }
+
+        emailSender.send(doctorRepository.findById(id).get().getEmail(), "Вы доктор");
         logger.info("Доктор по айди " + id + " подтвержден");
     }
 

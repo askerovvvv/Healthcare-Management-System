@@ -1,3 +1,4 @@
 14:41:18.188 INFO  100065 --- [http-nio-8080-exec-2] EmailVerificationServiceImpl : - Создан новый токен: EmailVerificationToken(id=2, token=c3aee57a-4050-47e9-86e2-71385842c9c7, createdAt=2023-11-15T14:41:18.181171722, expiresAt=2023-11-15T14:56:18.181191631, confirmedAt=null, user=User(id=2, firstname=User, lastname=John, email=admin@admin.com, password=$2a$10$S0yRI75yUrA8V4PSoq4ayOX3rmsWe1ya4zHGQhbbSPKfdalJ5YrK6, age=18, role=ROLE_PATIENT, emailVerified=false, user_type=PATIENT))
 14:41:22.247 INFO  104124 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: admin@admin.com
 14:41:50.585 INFO  132462 --- [http-nio-8080-exec-3] EmailVerificationServiceImpl : - По токену: c3aee57a-4050-47e9-86e2-71385842c9c7 аккаунт подтвержден
+15:05:30.402 INFO  16920 --- [task-1] EmailVerificationServiceImpl : - Ссылка для подтверждении аккаунта отправлена для: gigow71727@eazenity.com

@@ -2,6 +2,7 @@ package com.pet.healthwave.auth;
 
 import com.pet.healthwave.config.JwtService;
 import com.pet.healthwave.doctor.Doctor;
+import com.pet.healthwave.email.EmailSender;
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.exceptions.*;
@@ -38,6 +39,7 @@ public class AuthServiceImpl implements AuthService{
     private final Logger logger = LoggerFactory.getLogger("AuthServiceImpl");
     private final UserRepository userRepository;
     private final EmailVerificationService emailVerificationService;
+    private final EmailSender emailSender;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
@@ -80,7 +82,7 @@ public class AuthServiceImpl implements AuthService{
 
         String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken.getToken();
 
-        emailVerificationService.send(request.email(), buildEmail(request.firstname(), link));
+        emailSender.send(request.email(), buildEmail(request.firstname(), link));
 
         return AuthMessages.USER_REGISTERED;
     }

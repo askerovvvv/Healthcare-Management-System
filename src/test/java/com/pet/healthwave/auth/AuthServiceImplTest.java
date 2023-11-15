@@ -1,6 +1,8 @@
 package com.pet.healthwave.auth;
 
 import com.pet.healthwave.config.JwtService;
+import com.pet.healthwave.email.EmailSender;
+import com.pet.healthwave.email.EmailSenderImpl;
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.exceptions.AuthException;
@@ -46,6 +48,8 @@ class AuthServiceImplTest {
     private AuthValidator<AuthenticationRequest> authValidator;
     @Mock
     private AuthServiceImpl mockAuthService;
+    @Mock
+    private EmailSenderImpl emailSender;
 
     private RegisterRequest registerRequest;
     private AuthenticationRequest authenticationRequest;
@@ -63,7 +67,16 @@ class AuthServiceImplTest {
                 false);
 
         authenticationRequest = new AuthenticationRequest("test@example.com", "password");
-        mockAuthService = new AuthServiceImpl(userRepository, emailVerificationService, passwordEncoder, jwtService, authManager, registerValidator,authValidator);
+        mockAuthService = new AuthServiceImpl(
+                userRepository,
+                emailVerificationService,
+                emailSender,
+                passwordEncoder,
+                jwtService,
+                authManager,
+                registerValidator,
+                authValidator
+        );
     }
 
     @Test
@@ -84,7 +97,7 @@ class AuthServiceImplTest {
         when(userRepository.save(mockUser)).thenReturn(mockUser);
         when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
         emailVerificationService.saveVerificationToken(any(EmailVerificationToken.class));
-        doNothing().when(emailVerificationService).send(anyString(), anyString());
+        doNothing().when(emailSender).send(anyString(), anyString());
 
         String expectedResponse = mockAuthService.registerService(registerRequest);
         String actualResponse = "На вашу почту отправлено сообщение, перейдите и активируйте аккаунт.";
@@ -93,7 +106,7 @@ class AuthServiceImplTest {
         verify(userRepository, times(1)).save(mockUser);
         verify(emailVerificationService, times(1))
                 .saveVerificationToken(any(EmailVerificationToken.class));
-        verify(emailVerificationService, times(1)).send(anyString(), anyString());
+        verify(emailSender, times(1)).send(anyString(), anyString());
     }
 
     @Test

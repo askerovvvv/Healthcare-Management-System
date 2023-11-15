@@ -29,28 +29,6 @@ public class EmailVerificationServiceImpl implements EmailVerificationService{
     private final JavaMailSender javaMailSender;
     private final EmailVerificationRepository emailVerificationRepository;
 
-    @Value("${spring.mail.sender.email}")
-    private String senderEmail;
-
-    @Override
-    @Async
-    public void send(String to, String email) {
-        try {
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-            helper.setText(email, true);
-            helper.setTo(to);
-            helper.setSubject(EmailSenderMessages.CONFIRM_ACCOUNT);
-            helper.setFrom(senderEmail);
-            javaMailSender.send(message);
-            logger.info("Ссылка для подтверждении аккаунта отправлена для: " + to);
-
-        } catch (MessagingException e) {
-            logger.error("Ошибка при отправке на почту: " + to);
-            throw new EmailSenderException(EmailSenderMessages.MESSAGE_SEND_ERROR);
-        }
-    }
-
     @Override
     public void saveVerificationToken(EmailVerificationToken token) {
         emailVerificationRepository.save(token);

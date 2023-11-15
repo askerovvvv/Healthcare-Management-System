@@ -8,3 +8,9 @@
 14:44:54.135 ERROR 271  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
 14:44:54.143 INFO  279  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
 14:44:54.154 ERROR 290  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
+15:00:54.517 ERROR 131  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+15:00:54.528 ERROR 142  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+15:00:54.535 INFO  149  --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+15:00:54.541 ERROR 155  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+15:00:54.545 INFO  159  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+15:00:54.550 ERROR 164  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован
