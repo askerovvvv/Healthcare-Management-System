@@ -1,8 +1,9 @@
 package com.pet.healthwave.user;
 
 public enum Role {
-    DOCTOR,
-    PATIENT,
+    ROLE_DOCTOR,
+    ROLE_PATIENT,
     // todo: others
+    ROLE_ADMIN,
 
 }

@@ -1,6 +1,7 @@
 package com.pet.healthwave.auth;
 
 import com.pet.healthwave.config.JwtService;
+import com.pet.healthwave.doctor.Doctor;
 import com.pet.healthwave.email.EmailVerificationService;
 import com.pet.healthwave.email.EmailVerificationToken;
 import com.pet.healthwave.exceptions.*;
@@ -63,9 +64,16 @@ public class AuthServiceImpl implements AuthService{
             throw new AuthException(AuthMessages.USER_ALREADY_EXISTS_MESSAGE);
         }
 
-        User user = createUserFromRequest(request);
-        userRepository.save(user);
-        logger.info("Новый пользователь " + user.getEmail());
+        User user;
+        if (request.isDoctor()) {
+            user = createDoctorFromRequest(request);
+            userRepository.save(user);
+        } else {
+            user = createUserFromRequest(request);
+            userRepository.save(user);
+        }
+
+        logger.info("Новый пользователь: " + user.getEmail() + " с типом: " + request.isDoctor());
 
         EmailVerificationToken verificationToken = createToken(user);
         emailVerificationService.saveVerificationToken(verificationToken);
@@ -92,6 +100,7 @@ public class AuthServiceImpl implements AuthService{
 
         if (expiresAt.isBefore(LocalDateTime.now())) {
             logger.error("Время токена истекло: " + token);
+            userRepository.delete(verificationToken.getUser());
             throw new TokenExpiredException(AuthMessages.VERIFY_TOKEN_EXPIRED_MESSAGE);
         }
 
@@ -136,10 +145,27 @@ public class AuthServiceImpl implements AuthService{
                 .email(request.email())
                 .age(request.age())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.PATIENT)
+                .role(Role.ROLE_PATIENT)
                 .emailVerified(false)
+                .user_type("PATIENT")
                 .build();
     }
+
+    private Doctor createDoctorFromRequest(RegisterRequest request) {
+        Doctor doctor = new Doctor();
+
+        doctor.setFirstname(request.firstname());
+        doctor.setLastname(request.lastname());
+        doctor.setEmail(request.email());
+        doctor.setAge(request.age());
+        doctor.setPassword(passwordEncoder.encode(request.password()));
+        doctor.setRole(Role.ROLE_DOCTOR);
+        doctor.setEmailVerified(false);
+        doctor.setUser_type("DOCTOR");
+        doctor.setIsAccepted(false);
+
+        return doctor;
+    };
 
     private EmailVerificationToken createToken(User user) {
         String token = UUID.randomUUID().toString();

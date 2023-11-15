@@ -36,7 +36,9 @@ public record RegisterRequest(
         String passwordConfirm,
 
         @NotNull(message = "Возраст не может быть пустым.")
-        Byte age
+        Byte age,
+
+        Boolean isDoctor
 ) {
 
 }

@@ -1,3 +1,10 @@
-10:47:49.473 ERROR 10098 --- [http-nio-8080-exec-1] AuthServiceImpl : - У пользователя: gigow71727eazenity.com ошибка при валидации полей: [CustomValidationError[field=password, message=Пароль не может быть пустым.], CustomValidationError[field=email, message=Пожалуйста введите верный формат почты.]]
-11:06:00.759 ERROR 12370 --- [http-nio-8080-exec-2] AuthServiceImpl : - У пользователя: gigow71727eazenity.com ошибка при валидации полей: [CustomValidationError[field=password, message=Пароль не может быть пустым.], CustomValidationError[field=email, message=Пожалуйста введите верный формат почты.]]
-11:11:37.589 ERROR 32696 --- [http-nio-8080-exec-2] AuthServiceImpl : - У пользователя: gigow71727eazenity.com ошибка при валидации полей: [CustomValidationError[field=email, message=Пожалуйста введите верный формат почты.], CustomValidationError[field=password, message=Пароль не может быть пустым.]]
+13:58:16.705 INFO  80524 --- [http-nio-8080-exec-3] AuthServiceImpl : - Новый вход в аккаунт: gigow71727@eazenity.com
+14:41:18.180 INFO  100057 --- [http-nio-8080-exec-2] AuthServiceImpl : - Новый пользователь: admin@admin.com с типом: false
+14:41:50.632 INFO  132509 --- [http-nio-8080-exec-3] AuthServiceImpl : - Аккаунт подтвержден по токену: c3aee57a-4050-47e9-86e2-71385842c9c7
+14:42:29.415 INFO  171292 --- [http-nio-8080-exec-7] AuthServiceImpl : - Новый вход в аккаунт: admin@admin.com
+14:44:54.083 ERROR 219  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации полей: [CustomValidationError[field=passwordConfirm, message=Не должен быть пустым]]
+14:44:54.110 ERROR 246  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com ошибка при валидации пароля: [just to test, just to test2]
+14:44:54.124 INFO  260  --- [Test worker] AuthServiceImpl : - Новый вход в аккаунт: test@example.com
+14:44:54.135 ERROR 271  --- [Test worker] AuthServiceImpl : - У пользователя: test@example.com неверные данные для входа
+14:44:54.143 INFO  279  --- [Test worker] AuthServiceImpl : - Новый пользователь: test@example.com с типом: false
+14:44:54.154 ERROR 290  --- [Test worker] AuthServiceImpl : - Аккаунт: test@example.com уже зарегистрирован

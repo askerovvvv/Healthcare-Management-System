@@ -20,6 +20,8 @@ import java.util.Objects;
 @Builder
 @Entity
 @Table(name = "_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Boolean emailVerified;
+
+    @Column(name = "user_type", insertable = false, updatable = false)
+    private String user_type;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

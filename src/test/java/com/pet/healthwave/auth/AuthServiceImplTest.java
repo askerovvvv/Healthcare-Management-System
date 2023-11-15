@@ -59,7 +59,8 @@ class AuthServiceImplTest {
                 "test@example.com",
                 "password",
                 "password",
-                (byte) 44);
+                (byte) 44,
+                false);
 
         authenticationRequest = new AuthenticationRequest("test@example.com", "password");
         mockAuthService = new AuthServiceImpl(userRepository, emailVerificationService, passwordEncoder, jwtService, authManager, registerValidator,authValidator);
@@ -74,7 +75,7 @@ class AuthServiceImplTest {
                 .password("hashedPassword")
                 .age((byte) 44)
                 .emailVerified(false)
-                .role(Role.PATIENT)
+                .role(Role.ROLE_PATIENT)
                 .build();
 
         when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());

@@ -1,0 +1,8 @@
+14:44:57.711 ERROR 3847 --- [Test worker] UserServiceImpl : - Пользователь: null ввел неверный текущий пароль.
+14:44:57.722 ERROR 3858 --- [Test worker] UserServiceImpl : - У пользователя: null ошибка при валидации полей: [CustomValidationError[field=newPassword, message=Новый пароль не должен быть пустым!]]
+14:44:57.730 INFO  3866 --- [Test worker] UserServiceImpl : - Пользователь: null успешно сменил пароль
+14:44:57.734 ERROR 3870 --- [Test worker] UserServiceImpl : - У пользователя: null ошибка при валидации пароля: [just to test]
+14:52:32.074 INFO  126  --- [Test worker] DoctorServiceImpl : - Mapping Doctor to DoctorDTO: Doctor(experience=null, specialty=null, qualifications=null, isAccepted=null)
+14:52:32.089 INFO  141  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
+14:52:59.496 INFO  120  --- [Test worker] DoctorServiceImpl : - Mapping Doctor to DoctorDTO: Doctor(experience=null, specialty=null, qualifications=null, isAccepted=null)
+14:52:59.506 INFO  130  --- [Test worker] DoctorServiceImpl : - result: DoctorDTO[firstname=firstname, lastname=lastname, email=null, age=null, role=null, experience=null, specialty=null, qualifications=null, isAccepted=null]
