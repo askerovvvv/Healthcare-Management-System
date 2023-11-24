@@ -18,19 +18,20 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     @PatchMapping("/accept")
-    public ResponseEntity<?> accept(@RequestParam("id") Long id) {
-        doctorService.AcceptDoctor(id);
+    public ResponseEntity<?> accept(@RequestParam("id") Long id, Principal principal) {
+        doctorService.AcceptDoctor(id, principal);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/fill/doctor/data")
     public ResponseEntity<?> accept(@RequestBody FillInformationRequest request, Principal principal) {
-        return ResponseEntity.status(HttpStatus.OK).body(doctorService.FillInformationForDoctor(request, principal));
+        doctorService.FillInformationForDoctor(request, principal);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/profile/{doctorId}")
-    public ResponseEntity<DoctorDTO> doctorById(@PathVariable("doctorId") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getDoctorProfileById(id));
-    }
+//    @GetMapping("/profile/{doctorId}")
+//    public ResponseEntity<DoctorDTO> doctorById(@PathVariable("doctorId") Long id) {
+//        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getDoctorProfileById(id));
+//    }
 
 }

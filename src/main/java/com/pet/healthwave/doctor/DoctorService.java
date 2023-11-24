@@ -4,9 +4,9 @@ package com.pet.healthwave.doctor;
 import java.security.Principal;
 
 public interface DoctorService {
-    void AcceptDoctor(Long id);
+    void AcceptDoctor(Long id, Principal connectedHeadPhysician);
 
-    DoctorDTO FillInformationForDoctor(FillInformationRequest request, Principal connectedDoctor);
+    void    FillInformationForDoctor(FillInformationRequest request, Principal connectedDoctor);
 
-    DoctorDTO getDoctorProfileById(Long id);
+    void getDoctorProfileById(Long id);
 }

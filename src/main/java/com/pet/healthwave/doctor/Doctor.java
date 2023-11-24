@@ -1,6 +1,7 @@
 package com.pet.healthwave.doctor;
 
 
+import com.pet.healthwave.hospital.Hospital;
 import com.pet.healthwave.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,9 @@ public class Doctor extends User {
     private Specialty specialty;
     private Set<String> qualifications;
     private Boolean isAccepted;
+    @ManyToOne
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 
     @LastModifiedDate
     @Column(insertable = false)
