@@ -5,5 +5,6 @@ public enum Role {
     ROLE_PATIENT,
     // todo: others
     ROLE_ADMIN,
+    ROLE_HEAD_Physician
 
 }

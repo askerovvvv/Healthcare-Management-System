@@ -34,6 +34,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/doctor/fill/doctor/data")
                 .hasRole("DOCTOR")
                 .requestMatchers("/api/v1/doctor/accept")
+                .hasRole("HEAD_Physician")
+                .requestMatchers("/api/v1/hospital/add-hospital")
                 .hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()

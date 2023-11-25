@@ -83,6 +83,7 @@ public class AuthServiceImpl implements AuthService{
         String link = "http://localhost:8080/api/v1/auth/confirm?token=" + verificationToken.getToken();
 
         emailSender.send(request.email(), buildEmail(request.firstname(), link));
+        logger.info("Ссылка для подтверждении аккаунта отправлена для: " + request.email());
 
         return AuthMessages.USER_REGISTERED;
     }

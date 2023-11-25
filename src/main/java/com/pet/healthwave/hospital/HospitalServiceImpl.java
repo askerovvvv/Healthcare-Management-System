@@ -19,4 +19,6 @@ public class HospitalServiceImpl implements HospitalService{
 
         hospitalRepository.save(hospital);
     }
+
+
 }

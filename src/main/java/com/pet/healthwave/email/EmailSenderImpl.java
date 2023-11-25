@@ -33,7 +33,7 @@ public class EmailSenderImpl implements EmailSender{
             helper.setSubject(EmailSenderMessages.CONFIRM_ACCOUNT);
             helper.setFrom(senderEmail);
             javaMailSender.send(message);
-            logger.info("Ссылка для подтверждении аккаунта отправлена для: " + to);
+            logger.info("Отправка сообщения для: " + to);
 
         } catch (MessagingException e) {
             logger.error("Ошибка при отправке на почту: " + to);

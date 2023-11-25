@@ -63,6 +63,7 @@ public class DefaultExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
+
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<ApiError> handleException(TokenExpiredException exception, HttpServletRequest request) {
         ApiError apiError = new ApiError(
@@ -72,6 +73,17 @@ public class DefaultExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.GONE).body(apiError);
+    }
+
+    @ExceptionHandler(CustomAccessDeniedException.class)
+    public ResponseEntity<ApiError> handleException(CustomAccessDeniedException exception, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                request.getRequestURI(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
 }
