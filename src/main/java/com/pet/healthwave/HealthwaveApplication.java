@@ -21,8 +21,15 @@ public class HealthwaveApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(AuthService authService) {
 		return args -> {
-			var token = new AuthenticationRequest("headPhis@bikedid.com", "223abcd!");
-			System.out.println("Token: " + authService.authenticateService(token));
+			var token = new AuthenticationRequest("witic43620@cumzle.com", "223abcd!");
+			var token2 = new AuthenticationRequest("headPhis@cumzle.com", "223abcd!");
+			var token3 = new AuthenticationRequest("dondon@cumzle.com", "223abcd!");
+
+			System.out.println("Token1: " + authService.authenticateService(token));
+			System.out.println("Token2: " + authService.authenticateService(token2));
+			System.out.println("Token3: " + authService.authenticateService(token3));
+
+
 		};
 	}
 

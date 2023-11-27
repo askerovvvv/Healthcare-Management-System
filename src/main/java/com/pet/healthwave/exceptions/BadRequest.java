@@ -1,7 +1,7 @@
 package com.pet.healthwave.exceptions;
 
-public class CustomAccessDeniedException extends RuntimeException{
-    public CustomAccessDeniedException(String message) {
+public class BadRequest extends RuntimeException{
+    public BadRequest(String message) {
         super(message);
     }
 }

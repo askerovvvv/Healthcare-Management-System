@@ -75,8 +75,8 @@ public class DefaultExceptionHandler {
         return ResponseEntity.status(HttpStatus.GONE).body(apiError);
     }
 
-    @ExceptionHandler(CustomAccessDeniedException.class)
-    public ResponseEntity<ApiError> handleException(CustomAccessDeniedException exception, HttpServletRequest request) {
+    @ExceptionHandler(BadRequest.class)
+    public ResponseEntity<ApiError> handleException(BadRequest exception, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 request.getRequestURI(),
                 exception.getMessage(),

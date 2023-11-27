@@ -36,7 +36,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
 
-    private final Logger logger = LoggerFactory.getLogger("AuthServiceImpl");
+    private final Logger logger = LoggerFactory.getLogger("Auth");
     private final UserRepository userRepository;
     private final EmailVerificationService emailVerificationService;
     private final EmailSender emailSender;
@@ -148,7 +148,7 @@ public class AuthServiceImpl implements AuthService{
                 .email(request.email())
                 .age(request.age())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.ROLE_PATIENT)
+                .role(Role.USER)
                 .emailVerified(false)
                 .user_type("PATIENT")
                 .build();
@@ -162,7 +162,7 @@ public class AuthServiceImpl implements AuthService{
         doctor.setEmail(request.email());
         doctor.setAge(request.age());
         doctor.setPassword(passwordEncoder.encode(request.password()));
-        doctor.setRole(Role.ROLE_DOCTOR);
+        doctor.setRole(Role.DOCTOR);
         doctor.setEmailVerified(false);
         doctor.setUser_type("DOCTOR");
         doctor.setIsAccepted(false);

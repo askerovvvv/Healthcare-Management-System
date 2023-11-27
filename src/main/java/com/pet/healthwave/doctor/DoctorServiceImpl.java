@@ -1,19 +1,22 @@
 package com.pet.healthwave.doctor;
 
 import com.pet.healthwave.email.EmailSender;
-import com.pet.healthwave.exceptions.CustomAccessDeniedException;
+import com.pet.healthwave.exceptions.BadRequest;
 import com.pet.healthwave.exceptions.DefaultValidationException;
 import com.pet.healthwave.exceptions.DoctorDidNotAcceptedException;
 import com.pet.healthwave.exceptions.ObjectNotFoundException;
 import com.pet.healthwave.hospital.Hospital;
 import com.pet.healthwave.hospital.HospitalMessages;
 import com.pet.healthwave.hospital.HospitalRepository;
+import com.pet.healthwave.user.Role;
 import com.pet.healthwave.validator.CustomValidationError;
 import com.pet.healthwave.validator.DefaultValidator;
 import com.pet.healthwave.validator.ValidationMessages;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -23,25 +26,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService{
 
     private final DoctorRepository doctorRepository;
     private final HospitalRepository hospitalRepository;
-    private final DefaultValidator<FillInformationRequest> doctorValidator;
-
-    private final Logger logger = LoggerFactory.getLogger("DoctorServiceImpl");
     private final EmailSender emailSender;
-
-    public DoctorServiceImpl(DoctorRepository doctorRepository,
-                             HospitalRepository hospitalRepository,
-                             @Qualifier("defaultValidatorImpl") DefaultValidator<FillInformationRequest> doctorValidator,
-                             EmailSender emailSender) {
-        this.doctorRepository = doctorRepository;
-        this.hospitalRepository = hospitalRepository;
-        this.doctorValidator = doctorValidator;
-        this.emailSender = emailSender;
-    }
+    private final Logger logger = LoggerFactory.getLogger("Doctor");
+    @Autowired
+    @Qualifier("defaultValidatorImpl")
+    private DefaultValidator<FillInformationRequest> doctorValidator;
 
     @Override
     public void AcceptDoctor(Long id, Principal connectedHeadPhysician) {
@@ -56,9 +50,11 @@ public class DoctorServiceImpl implements DoctorService{
 
         if (!hospitalHeadPhysician.equals(headPhysician.getEmail())) {
             logger.error(connectedHeadPhysician + " не может принять: " + doctor + " поскольку он не главврач этой больницы ");
-            throw new CustomAccessDeniedException(DoctorMessages.DOCTOR_CAN_NOT_ACCEPT);
+            throw new BadRequest(DoctorMessages.DOCTOR_CAN_NOT_ACCEPT);
         }
 
+
+        // TODO: Сократить количество обращений в бд!
         int updated = doctorRepository.updateIsAccepted(id);
         if (updated == 0) {
             logger.error("Доктор по айди " + id + " не подтвержден");
@@ -79,6 +75,7 @@ public class DoctorServiceImpl implements DoctorService{
 
         Optional<Hospital> hospital = hospitalRepository.findById(request.hospitalId());
         if (hospital.isEmpty()) {
+            logger.error("При заполнении доп. информации больница не найдена: " + request.hospitalId());
             throw new ObjectNotFoundException(HospitalMessages.HOSPITAL_NOT_FOUND);
         }
 
@@ -99,6 +96,41 @@ public class DoctorServiceImpl implements DoctorService{
                 .orElseThrow(() -> new ObjectNotFoundException(DoctorMessages.DOCTOR_NOT_FOUND));
 
 //        return DoctorMapper.INSTANCE.doctorToDTO(doctor);
+    }
+
+    @Override
+    @Transactional
+    // TODO: где лучше hospital or doctor package
+    public void changeHeadPhysician(Long doctorId, Integer hospitalId) {
+        Optional<Doctor> newHeadPhysicianById = doctorRepository.findById(doctorId);
+
+        if (newHeadPhysicianById.isEmpty()) {
+            logger.error("Новый главврач не найден в базе: " + doctorId);
+            throw new ObjectNotFoundException(DoctorMessages.DOCTOR_NOT_FOUND);
+        }
+
+        Optional<Hospital> hospitalById = hospitalRepository.findById(hospitalId);
+        if (hospitalById.isEmpty()) {
+            logger.error("Больница где была попытка поменять главврача не найдена: " + hospitalId);
+            throw new ObjectNotFoundException(HospitalMessages.HOSPITAL_NOT_FOUND);
+        }
+
+        Hospital hospital = hospitalById.get();
+        Doctor newHeadPhysician = newHeadPhysicianById.get();
+
+        Doctor currentHeadPhysician = doctorRepository.findByUsername(hospital.getHeadPhysician()).get();
+        currentHeadPhysician.setRole(Role.DOCTOR);
+
+        hospital.setHeadPhysician(newHeadPhysician.getEmail());
+        hospitalRepository.save(hospital);
+
+        newHeadPhysician.setRole(Role.HEAD_PHYSICIAN);
+        doctorRepository.save(newHeadPhysician);
+
+        emailSender.send(currentHeadPhysician.getEmail(), DoctorMessages.NO_MORE_HEAD_PHYSICIAN + hospital.getHospitalName());
+        emailSender.send(newHeadPhysician.getEmail(), DoctorMessages.NEW_HEAD_PHYSICIAN + hospital.getHospitalName());
+
+        logger.info("Главврач больницы " + hospital.getHospitalName() + currentHeadPhysician.getEmail() + " сменен на " + newHeadPhysician.getEmail());
     }
 
 
