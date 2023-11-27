@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService{
 
-    private final Logger logger = LoggerFactory.getLogger("UserServiceImpl");
+    private final Logger logger = LoggerFactory.getLogger("User");
     private final UserRepository userRepository;
     private final AuthValidator<ChangePasswordRequest> changePasswordValidator;
     private final PasswordEncoder passwordEncoder;
