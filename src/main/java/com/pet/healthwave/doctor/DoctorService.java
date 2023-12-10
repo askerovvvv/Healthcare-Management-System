@@ -8,7 +8,7 @@ public interface DoctorService {
 
     void    FillInformationForDoctor(FillInformationRequest request, Principal connectedDoctor);
 
-    void getDoctorProfileById(Long id);
+    DoctorDTO getDoctorProfileById(Long id);
 
     void changeHeadPhysician(Long doctorId, Integer hospitalId);
 }

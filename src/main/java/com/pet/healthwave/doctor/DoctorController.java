@@ -32,7 +32,7 @@ public class DoctorController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/change-headPhysician")
-    //TODO: FIX PreAuthorize
+    // TODO: FIX PreAuthorize
     public ResponseEntity<?> changeHeadPhysician(
             @RequestParam("doctorId") Long doctorId,
             @RequestParam("hospitalId") Integer hospitalId
@@ -42,9 +42,9 @@ public class DoctorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @GetMapping("/profile/{doctorId}")
-//    public ResponseEntity<DoctorDTO> doctorById(@PathVariable("doctorId") Long id) {
-//        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getDoctorProfileById(id));
-//    }
+    @GetMapping("/profile/{doctorId}")
+    public ResponseEntity<DoctorDTO> doctorById(@PathVariable("doctorId") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getDoctorProfileById(id));
+    }
 
 }

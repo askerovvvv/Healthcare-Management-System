@@ -1,9 +1,6 @@
 package com.pet.healthwave.doctor;
 
-import com.pet.healthwave.hospital.Hospital;
 import com.pet.healthwave.user.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.util.Set;
 

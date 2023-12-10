@@ -91,16 +91,18 @@ public class DoctorServiceImpl implements DoctorService{
     }
 
     @Override
-    public void getDoctorProfileById(Long id) {
-        Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException(DoctorMessages.DOCTOR_NOT_FOUND));
+    public DoctorDTO getDoctorProfileById(Long id) {
+        Optional<Doctor> doctor = doctorRepository.findById(id);
 
-//        return DoctorMapper.INSTANCE.doctorToDTO(doctor);
-    }
+        if (doctor.isEmpty()) {
+            logger.info("Доктор с id " + id + ": не найден!");
+            throw new ObjectNotFoundException(DoctorMessages.DOCTOR_NOT_FOUND);
+        }
+        return DoctorMapper.INSTANCE.doctorToDto(doctor.get());
+    } // TODO обработать полность. этот метод(логгеры, также в контролле указать админку)
 
     @Override
     @Transactional
-    // TODO: где лучше hospital or doctor package
     public void changeHeadPhysician(Long doctorId, Integer hospitalId) {
         Optional<Doctor> newHeadPhysicianById = doctorRepository.findById(doctorId);
 
