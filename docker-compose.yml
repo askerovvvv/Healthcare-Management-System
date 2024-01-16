@@ -1,0 +1,30 @@
+services:
+  postgres-service:
+    container_name: postgres-sql
+    image: postgres
+    environment:
+      POSTGRES_USER: hello
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: health_wave
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgres/data
+    networks:
+      - spring-boot-network
+  spring-boot-app:
+    container_name: spring-demo-project
+    image: spring/demo/project
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-boot-network
+
+volumes:
+  postgres:
+
+networks:
+  spring-boot-network:
+    driver: bridge
+
+
