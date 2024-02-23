@@ -40,6 +40,10 @@ public class Doctor extends User {
     @Column(insertable = false)
     private Long lastModifiedBy;
 
+    public Hospital getHospital() {
+        return hospital;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,5 +58,16 @@ public class Doctor extends User {
         return Objects.hash(super.hashCode(), experience, specialty, qualifications);
     }
 
-
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "experience=" + experience +
+                ", specialty=" + specialty +
+                ", qualifications=" + qualifications +
+                ", isAccepted=" + isAccepted +
+                ", hospital=" + (hospital != null ? hospital.getHospitalName() : null) + // или любое другое свойство, которое вы хотите включить
+                ", lastModified=" + lastModified +
+                ", lastModifiedBy=" + lastModifiedBy +
+                "} " + super.toString();
+    }
 }

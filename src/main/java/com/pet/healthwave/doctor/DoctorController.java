@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -46,5 +47,16 @@ public class DoctorController {
     public ResponseEntity<DoctorDTO> doctorById(@PathVariable("doctorId") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(doctorService.getDoctorProfileById(id));
     }
+
+    @GetMapping("/doctors/profiles")
+    public ResponseEntity<List<DoctorDTO>> doctorsProfiles(
+            @RequestParam(required = false) Specialty doctorSpecialty,
+            @RequestParam(required = false) String hospital
+    ) {
+        // TODO: add with hospital
+        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getAllDoctors(doctorSpecialty));
+    }
+
+
 
 }

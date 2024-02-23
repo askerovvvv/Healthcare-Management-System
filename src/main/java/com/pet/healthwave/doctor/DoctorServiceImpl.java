@@ -18,21 +18,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DoctorServiceImpl implements DoctorService{
 
+    private final Logger logger = LoggerFactory.getLogger("Doctor");
     private final DoctorRepository doctorRepository;
     private final HospitalRepository hospitalRepository;
     private final EmailSender emailSender;
-    private final Logger logger = LoggerFactory.getLogger("Doctor");
     @Autowired
     @Qualifier("defaultValidatorImpl")
     private DefaultValidator<FillInformationRequest> doctorValidator;
@@ -105,7 +107,6 @@ public class DoctorServiceImpl implements DoctorService{
     @Transactional
     public void changeHeadPhysician(Long doctorId, Integer hospitalId) {
         Optional<Doctor> newHeadPhysicianById = doctorRepository.findById(doctorId);
-
         if (newHeadPhysicianById.isEmpty()) {
             logger.error("Новый главврач не найден в базе: " + doctorId);
             throw new ObjectNotFoundException(DoctorMessages.DOCTOR_NOT_FOUND);
@@ -133,6 +134,19 @@ public class DoctorServiceImpl implements DoctorService{
         emailSender.send(newHeadPhysician.getEmail(), DoctorMessages.NEW_HEAD_PHYSICIAN + hospital.getHospitalName());
 
         logger.info("Главврач больницы " + hospital.getHospitalName() + currentHeadPhysician.getEmail() + " сменен на " + newHeadPhysician.getEmail());
+    }
+
+    @Override
+    public List<DoctorDTO> getAllDoctors(Specialty bySpecialty) {
+        Specification<Doctor> specification = Specification.where(null);
+
+        if (bySpecialty != null) {
+            specification = specification.and(DoctorSpecification.hasSpecialty(bySpecialty));
+        }
+
+        return doctorRepository.findAll(specification).stream()
+                .map(DoctorMapper.INSTANCE::doctorToDto)
+                .collect(Collectors.toList());
     }
 
 
