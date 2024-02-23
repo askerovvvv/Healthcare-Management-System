@@ -1,8 +1,6 @@
 package com.pet.healthwave.hospital;
 
-import com.pet.healthwave.doctor.Doctor;
-import com.pet.healthwave.doctor.DoctorMessages;
-import com.pet.healthwave.doctor.DoctorRepository;
+import com.pet.healthwave.doctor.*;
 import com.pet.healthwave.email.EmailSender;
 import com.pet.healthwave.exceptions.BadRequest;
 import com.pet.healthwave.exceptions.DefaultValidationException;
@@ -13,14 +11,18 @@ import com.pet.healthwave.validator.DefaultValidator;
 import com.pet.healthwave.validator.ValidationMessages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,10 +66,20 @@ public class HospitalServiceImpl implements HospitalService{
                 .headPhysician(request.headPhysician())
                 .build();
         hospitalRepository.save(hospital);
-
         emailSender.send(request.headPhysician(), DoctorMessages.NEW_HEAD_PHYSICIAN + hospital.getHospitalName());
         logger.info("Новая больница создана: " + hospital.getHospitalName());
     }
 
+    @Override
+    public List<HospitalDto> getAllHospitals(Specialty specialty) {
+        Specification<Hospital> specification = Specification.where(null);
+        // toDO: validate data
+        if (specialty != null) {
+            specification = HospitalSpecification.hasDoctorInSpecialty(specialty);
+        }
 
+        return hospitalRepository.findAll(specification).stream()
+                .map(HospitalMapper.INSTANCE::hospitalToDto)
+                .collect(Collectors.toList());
+    }
 }

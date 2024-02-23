@@ -1,5 +1,6 @@
 package com.pet.healthwave.hospital;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pet.healthwave.doctor.Doctor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,21 +23,25 @@ public class Hospital {
     private Integer id;
     private String headPhysician;
     private String hospitalName;
+    // TODO: add city or region
     private String address;
     @OneToMany(mappedBy = "hospital")
+    @JsonIgnore
     private Set<Doctor> doctors;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Hospital hospital = (Hospital) o;
-        return Objects.equals(id, hospital.id) && Objects.equals(headPhysician, hospital.headPhysician) && Objects.equals(hospitalName, hospital.hospitalName) && Objects.equals(address, hospital.address);
+    public String getHospitalName() {
+        return hospitalName;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, headPhysician, hospitalName, address);
+    public String getHeadPhysician() {
+        return headPhysician;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public Set<Doctor> getDoctors() {
+        return doctors;
+    }
 }
