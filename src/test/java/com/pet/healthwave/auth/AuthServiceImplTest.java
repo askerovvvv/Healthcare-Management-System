@@ -88,7 +88,7 @@ class AuthServiceImplTest {
                 .password("hashedPassword")
                 .age((byte) 44)
                 .emailVerified(false)
-                .role(Role.ROLE_PATIENT)
+                .role(Role.USER)
                 .build();
 
         when(registerValidator.validate(registerRequest)).thenReturn(Collections.emptyList());

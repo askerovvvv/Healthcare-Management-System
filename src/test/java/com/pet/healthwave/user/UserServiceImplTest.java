@@ -42,7 +42,11 @@ class UserServiceImplTest {
         );
         authToken = mock(UsernamePasswordAuthenticationToken.class);
 
-        userService = new UserServiceImpl(userRepository, changePasswordValidator, passwordEncoder);
+        userService = new UserServiceImpl(
+                userRepository,
+                changePasswordValidator,
+                passwordEncoder
+        );
     }
 
     @Test

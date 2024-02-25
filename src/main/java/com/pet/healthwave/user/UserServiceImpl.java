@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -48,5 +49,17 @@ public class UserServiceImpl implements UserService{
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
         logger.info("Пользователь: " + connectedUser.getName() +" успешно сменил пароль");
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> usersFromDb = userRepository.findAll();
+        List<UserDTO> users = usersFromDb.stream()
+                .map(
+                        UserMapper.INSTANCE::userToDto
+                ).collect(Collectors.toList());
+
+
+        return users;
     }
 }

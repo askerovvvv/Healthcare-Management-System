@@ -21,4 +21,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "SET u.emailVerified = TRUE " +
             "WHERE u.email = ?1")
     int updateEmailVerified(String email);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u " +
+            "SET u.role = ?2 " +
+            "WHERE u.id = ?1")
+    int setAdminRole(Long id, Role role);
 }
